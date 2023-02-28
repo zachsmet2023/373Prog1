@@ -3,7 +3,7 @@ from socket import *  # include Python's socket library
 import sys
 
 if (len(sys.argv) != 4):
-    print('Usage: python ProjectClient.py server_ip server_port file_name')
+    print('Usage: python client.py server_ip server_port get_text_file')
     sys.exit()
 serverName = sys.argv[1]
 serverPort = int(sys.argv[2])
@@ -25,19 +25,5 @@ modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
 print(modifiedMessage.decode())
 
 
-# Attach server name, port to message; send into socket
 
-while 1:
-    madMessage, serverAddress = clientSocket.recvfrom(2048)
-    if madMessage.decode() == '$h!tH3@d':
-        break
-    madResponse = input(madMessage.decode()+' : ')
-    clientSocket.sendto(madResponse.encode(), (serverName, serverPort))
-
-myfile = open(fileName, 'w')
-while 1:
-    storyTime, serverAddress = clientSocket.recvfrom(2048)
-    if storyTime.decode() == 'Big Chungus':
-        break
-    myfile.write(storyTime.decode())
 clientSocket.close()
