@@ -4,26 +4,30 @@ import sys
 import os
 
 # METHOD
-def handle_request(serverSocket, directoryPath):
+def handleRequest(serverSocket, directoryPath):
     request, client_address = serverSocket.recvfrom(2048)
     request = request.decode()
+
+    #if nothing 
     if not request:
         return
     
     #if the request is for the html file 
-    if (request == "index.html"):
-        filePath = os.path.join(directoryPath, request)
+    if (request == "GET index.html"):
+        filePath = os.path.join(directoryPath, "index.html")
         if os.path.exists(filePath):
             with open(filePath, 'rb') as f:
                 data = f.read()
 
-            chunk_size = 1024
-            for i in range(0, len(data), chunk_size):
-                chunk = data[i:i+chunk_size]
+            #File is to big so need to chunk it up to send
+            chunkSize = 1024
+            for i in range(0, len(data), chunkSize):
+                chunk = data[i:i+chunkSize]
                 serverSocket.sendto(chunk, client_address)
 
             serverSocket.sendto(EOFMSG.encode(), client_address)
-            f.close()
+            
+            print('HTML SENT SUCCESSFULLY')
         else:
             serverSocket.sendto(ERRORMSG.encode(), client_address)
 
@@ -36,12 +40,16 @@ def handle_request(serverSocket, directoryPath):
         response = os.path.join(directoryPath, request)
         if os.path.exists(response):
             serverSocket.sendto(response.encode(), client_address)
+            print("IMAGE SENT SUCCESSFULLY")
         else:
             serverSocket.sendto(ERRORMSG.encode(), client_address)
 
 
-#MAIN
+
 if __name__ == '__main__':
+
+    ERRORMSG = "FILE NOT FOUND"
+    EOFMSG = "EOF"
 
     # if (len(sys.argv) != 3):
     #     print('Usage: python3 server.py server_port path_to_html ')
@@ -50,8 +58,7 @@ if __name__ == '__main__':
     #filePath = sys.argv[2]
     directoryPath = "SampleWebPage/"
     serverPort = 12000
-    ERRORMSG = "FILE NOT FOUND"
-    EOFMSG = "EOF"
+    
 
 
     # Create UDP socket
@@ -63,6 +70,6 @@ if __name__ == '__main__':
 
 
     while 1:
-       handle_request(serverSocket, directoryPath)
+       handleRequest(serverSocket, directoryPath)
 
     

@@ -1,5 +1,6 @@
 # UDPclient.py
 from socket import * 
+import os
 import sys
 from html.parser import HTMLParser
 
@@ -9,7 +10,6 @@ from html.parser import HTMLParser
 class MyHTMLParser(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.image_urls = []
 
     def handle_starttag(self, tag, attrs):
         if tag == "img":
@@ -25,13 +25,14 @@ def getHTML(clientSocket):
   while 1:
         recMessage, serverAddress = clientSocket.recvfrom(2048)
         if (recMessage.decode() == "EOF"):
+            print("HTML RECEIVED SUCCESSFULLY")
             return fileContents
         fileContents +=recMessage.decode()
 
 def getIMG(clientSocket):
     recMessage, serverAddress = clientSocket.recvfrom(2048)
     if (recMessage.decode() != "FILE NOT FOUND"):
-        print("IMAGE RECEIVED")
+        print("IMAGE RECEIVED SUCCESSFULLY")
     else:
         print(recMessage.decode())
 
@@ -43,29 +44,32 @@ if __name__ == '__main__':
     #     sys.exit()
     # serverName = sys.argv[1]
     # serverPort = int(sys.argv[2])
-    # fileName = sys.argv[3]
+    # filePath = sys.argv[3]
 
     serverName = '127.0.0.1'
     serverPort = 12000
-    fileName = "index.html"
+    filePath = 'getTextFile.txt'
     
 
     # Create UDP socket for server
     clientSocket = socket(AF_INET, SOCK_DGRAM)
 
-    # Attach server name, port to message; send into socket
-    clientSocket.sendto(fileName.encode(), (serverName, serverPort))
+    # opens text doc, extracts GET message sends it to server
+    if os.path.exists(filePath):
+        with open(filePath, 'rb') as f:
+            data = f.read()
+        clientSocket.sendto(data, (serverName, serverPort))
+    else:
+        print("TXT PATH DOESNT EXIST") 
 
     # Retrieves all of the html file from server
     HTMLFILE = getHTML(clientSocket)
 
     #Creating Parser and giving it the html file
     parser = MyHTMLParser()
+    print("~~~~STARTING PARSER~~~~")
     parser.feed(HTMLFILE)
-
-
-    
-
+    print("~~~~STOPPING PARSER~~~~")
 
 
     clientSocket.close()
