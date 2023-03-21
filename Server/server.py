@@ -4,7 +4,7 @@ import sys
 import os
 
 # METHOD
-def handleRequest(serverSocket, directoryPath):
+def incomingMes(serverSocket, directoryPath):
     request, client_address = serverSocket.recvfrom(2048)
     request = request.decode()
 
@@ -70,6 +70,6 @@ if __name__ == '__main__':
 
 
     while 1:
-       handleRequest(serverSocket, directoryPath)
+       incomingMes(serverSocket, directoryPath)
 
     
