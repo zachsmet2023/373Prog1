@@ -46,8 +46,8 @@ if __name__ == '__main__':
     # serverPort = int(sys.argv[2])
     # filePath = sys.argv[3]
 
-    serverName = '127.0.0.1'
-    serverPort = 12000
+    serverName = 'compsci04.snc.edu'
+    serverPort = 3900
     filePath = 'getTextFile.txt'
     
 

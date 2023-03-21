@@ -57,7 +57,7 @@ if __name__ == '__main__':
     #serverPort = int(sys.argv[1])
     #filePath = sys.argv[2]
     directoryPath = "SampleWebPage/"
-    serverPort = 12000
+    serverPort = 3900
     
 
 
